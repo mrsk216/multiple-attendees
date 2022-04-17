@@ -3,8 +3,8 @@
 import { each } from "svelte/internal";
 
 
-    let ticketNum = 1;
-    let openForm = true;
+    let ticketNum = 0;
+    let openForm = false;
     let totalAttendees = [];
     let defaultAttendee = {
             id: 1,
