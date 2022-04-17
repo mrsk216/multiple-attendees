@@ -1,13 +1,17 @@
 <script>
-    let ticketNum = 0;
-    let openForm = false;
+    import supabase from "$lib/db";
+import { each } from "svelte/internal";
+
+
+    let ticketNum = 1;
+    let openForm = true;
     let totalAttendees = [];
     let defaultAttendee = {
             id: 1,
-            fname: '',
-            lname: '',
-            email: '',
-            pass: ''
+            fname: 'sk',
+            lname: 'ak',
+            email: 'sk1@gmail.com',
+            pass: 'csdfsdssdsd'
     };
     function addPerson(attendee) {
         totalAttendees = totalAttendees.filter(m => m.id !== attendee.id);
@@ -22,8 +26,38 @@
         openForm = true;
     }
 
-    function createAttendee(){
-
+    async function createAttendee(){      
+        if(totalAttendees.length==1) {
+            let fname = totalAttendees[0].fname;      
+            let lname = totalAttendees[0].lname;      
+            let email = totalAttendees[0].email;      
+            let password = totalAttendees[0].password;
+            const { data, error } = await supabase
+            .from('attendee')
+            .insert([
+                { fname: fname, lname:lname, email:email, password:password }
+            ]) 
+            if(data) alert("Insert Successfully")      
+            if(error) alert("Insert Failed")
+        }
+        if(totalAttendees.length==2) {
+            let fname0 = totalAttendees[0].fname;      
+            let lname0 = totalAttendees[0].lname;      
+            let email0 = totalAttendees[0].email;      
+            let password0 = totalAttendees[0].password;
+            let fname1 = totalAttendees[1].fname;      
+            let lname1 = totalAttendees[1].lname;      
+            let email1 = totalAttendees[1].email;      
+            let password1 = totalAttendees[1].password;
+            const { data, error } = await supabase
+            .from('attendee')
+            .insert([
+                { fname: fname0, lname:lname0, email:email0, password:password0 },
+                { fname: fname1, lname:lname1, email:email1, password:password1 }
+            ]) 
+            if(data) alert("Insert Successfully")      
+            if(error) alert("Insert Failed")
+        }    
     }
 </script>
 
@@ -83,21 +117,14 @@
                         <input type="password" id="pass" class="border" bind:value={attendee.pass}>
                     </div>
                     <div class="grid gap-y-1 mb-3">
-                        <button class="w-1/3 bg-gray-400 py-1 ml-auto rounded" on:click={() => addPerson(attendee)}>Save</button>
+                        <button type="button" class="w-1/3 bg-gray-400 py-1 ml-auto rounded" on:click={() => addPerson(attendee)}>Save</button>
                     </div>
                 </div>
             {/each}
             <div class="w-1/2 mx-auto">
                 <div class="w-1/6 ml-auto">
-                    <button class="w-full bg-green-300 rounded-lg py-1 mt-5">Submit</button>
+                    <button type="submit" class="w-full bg-green-300 rounded-lg py-1 mt-5">Submit</button>
                 </div>
             </div>
         {/if}
     </form>
-    {#if openForm}
-        <div class="w-1/2 flex gap-5 mx-auto mt-5">
-            <div class="w-1/2">
-                <pre>{JSON.stringify(totalAttendees, null, 2)}</pre>
-            </div>
-        </div>
-    {/if}
