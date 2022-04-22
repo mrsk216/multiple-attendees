@@ -143,7 +143,7 @@ import { each } from "svelte/internal";
 							{#if question.type === 1}
 								<div>
 									{#if question.question===undefined||question.question===""}
-										Question No {i} ?
+										Question No {i+1} ?
 										{:else}
 										{question.question} ?
 									{/if}
