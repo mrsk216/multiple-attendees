@@ -3,14 +3,19 @@ import { each } from "svelte/internal";
 
 
 	let totalAttendees = [];
+	let totalQuestions = [];
 	let num = 0;
 	const defaultAttendee = {
 		id: num,
 		name: '',
 		nameError: '',
-		questions:[],
 		istrue: true,
 		ticketName: ''
+	};
+	const defaultQuestions = {
+		id: num,
+		questions:[],
+		istrue: true,
 	};
 
 	$: attendees = [
@@ -18,24 +23,32 @@ import { each } from "svelte/internal";
 			id: 0,
 			name: '',
 			nameError: '',
-			questions:[],
 			istrue: true,
 			ticketName: ''
+		}
+	];
+	$: ques = [
+		{
+			id: 0,
+			questions:[],
+			istrue: true,
 		}
 	];
 
 	//$: attendees
 
 	$: questions = [
-		{ id: 0, question: attendees[0].questions[0], type: 1 },
-		{ id: 1, question: attendees[0].questions[1], type: 1 },
-		{ id: 2, question: attendees[0].questions[2], type: 1 }
+		{ id: 0, question: ques[0].questions[0], type: 1 },
+		{ id: 1, question: ques[0].questions[1], type: 1 },
+		{ id: 2, question: ques[0].questions[2], type: 1 }
 	];
 	console.log(totalAttendees.length);
+	console.log("totalQuestions" + totalQuestions.length);
 
 	const addNew = () => {
 		num = num + 1;
 		attendees = [...attendees, { ...defaultAttendee, id: num }];
+		ques = [...ques, { ...defaultQuestions, id: num }];
 	};
 
 	let valid = false;
@@ -50,15 +63,22 @@ import { each } from "svelte/internal";
 		}
 		if (valid) {
 			attendee.istrue = true;
+			ques.istrue = true;
 			const index = totalAttendees.findIndex((e) => e.id === attendee.id);
 			if (index === -1) {
 				totalAttendees = [...totalAttendees, attendee];
 				attendee.istrue = false;
 				attendees = attendees;
+				totalQuestions = [...totalQuestions, ques];
+				ques.istrue = false;
+				ques = ques;
 			} else {
 				totalAttendees[index] = attendee;
 				attendee.istrue = false;
 				attendees = attendees;
+				totalQuestions[index] = ques;
+				ques.istrue = false;
+				ques = ques;
 			}
 		}
 	};
@@ -66,12 +86,22 @@ import { each } from "svelte/internal";
 	function remove(attendee) {
 		if (attendees.length > 1) {
 			attendees = attendees.filter((a) => a.id != attendee.id);
+			ques = ques.filter((a) => a.id != attendee.id);
 			totalAttendees = attendees;
+			totalQuestions = ques;
 		}
 	}
 	let show = false;
 	$: {
 		let test = attendees.every((e) => e.istrue === false);
+		if (test) {
+			show = true;
+		} else {
+			show = false;
+		}
+	}
+	$: {
+		let test = ques.every((e) => e.istrue === false);
 		if (test) {
 			show = true;
 		} else {
@@ -117,21 +147,21 @@ import { each } from "svelte/internal";
 				<br />
 				<input
 					type="text"
-					bind:value={attendee.questions[0]}
+					bind:value={ques[0].questions[0]}
 					class="bg-transparent"
 					placeholder="Enter Question 1"
 				/>
 				<br />
 				<input
 					type="text"
-					bind:value={attendee.questions[1]}
+					bind:value={ques[0].questions[1]}
 					class="bg-transparent"
 					placeholder="Enter Question 2"
 				/>
 				<br />
 				<input
 					type="text"
-					bind:value={attendee.questions[2]}
+					bind:value={ques[0].questions[2]}
 					class="bg-transparent"
 					placeholder="Enter Question 3"
 				/>
@@ -184,6 +214,10 @@ import { each } from "svelte/internal";
 	<div style="margin-right: 20px; flex-grow: 1">
 		<h1>attendees</h1>
 		<pre>{JSON.stringify(attendees, null, 2)}</pre>
+	</div>
+	<div style="margin-right: 20px; flex-grow: 1">
+		<h1>attendees</h1>
+		<pre>{JSON.stringify(ques, null, 2)}</pre>
 	</div>
 	<div style="margin-right: 20px; flex-grow: 1">
 		<h1>attendees</h1>
