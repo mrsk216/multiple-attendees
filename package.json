@@ -19,6 +19,7 @@
     "prettier": "^2.5.1",
     "prettier-plugin-svelte": "^2.5.0",
     "svelte": "^3.44.0",
+    "svelte-recaptcha-v2": "^0.0.2",
     "tailwindcss": "^3.0.24"
   },
   "type": "module"
